@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Indicadores CAE Club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F5F7F8; --card:#FFFFFF; --ink:#18232E; --muted:#5B6875; --rule:#DCE2E7; --soft:#EDF1F4;
+  --accent:#0E5A6B;
+  --hot:#C2572B; --hot-soft:#F6E1D6; --cold:#3D6F9E; --cold-soft:#DCE7F2; --lost:#9AA5B0;
+  --red:#C62F2F; --red-soft:#F7DEDC; --orange:#D98214; --orange-soft:#FBEBD2; --green:#23845A; --green-soft:#D7EEE2;
+  --font:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --num:"Barlow Semi Condensed","Barlow",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#121A21; --card:#1A242D; --ink:#E7EDF2; --muted:#9AA8B5; --rule:#2C3944; --soft:#223039;
+    --accent:#5FB3C4; --hot:#E8875C; --hot-soft:#43291E; --cold:#7FA8D1; --cold-soft:#1F3043; --lost:#5E6B77;
+    --red:#EF6B63; --red-soft:#4A2324; --orange:#EFA548; --orange-soft:#47341A; --green:#4FBE8B; --green-soft:#1C3D2F;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#121A21; --card:#1A242D; --ink:#E7EDF2; --muted:#9AA8B5; --rule:#2C3944; --soft:#223039;
+  --accent:#5FB3C4; --hot:#E8875C; --hot-soft:#43291E; --cold:#7FA8D1; --cold-soft:#1F3043; --lost:#5E6B77;
+  --red:#EF6B63; --red-soft:#4A2324; --orange:#EFA548; --orange-soft:#47341A; --green:#4FBE8B; --green-soft:#1C3D2F;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 20px 60px}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px}
+header.top h1{font-family:var(--num);font-weight:700;font-size:34px;line-height:1.05;margin:0;letter-spacing:-.01em}
+header.top p{margin:4px 0 0;color:var(--muted)}
+.controls{display:flex;gap:10px;flex-wrap:wrap}
+select{font:inherit;font-weight:500;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:8px 34px 8px 12px;appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 17px) 55%,calc(100% - 12px) 55%;background-size:5px 5px;background-repeat:no-repeat}
+select:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{font-family:var(--num);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.state{background:var(--card);border:1px dashed var(--rule);border-radius:12px;padding:40px 24px;text-align:center;color:var(--muted)}
+.state strong{display:block;color:var(--ink);font-size:17px;margin-bottom:6px}
+
+/* strip */
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-bottom:28px}
+.strip .cell{background:var(--card);padding:14px 16px}
+.strip .v{font-family:var(--num);font-weight:700;font-size:28px;line-height:1.1;font-variant-numeric:tabular-nums}
+.strip .l{color:var(--muted);font-size:13px}
+.thermo{display:flex;gap:8px;flex-wrap:wrap;margin:-12px 0 30px}
+.thermo a{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:999px;padding:5px 12px 5px 6px;font-weight:500}
+.thermo .dot{min-width:28px;height:24px;border-radius:999px;display:grid;place-items:center;font-family:var(--num);font-weight:700;font-size:14px;color:#fff;padding:0 6px}
+
+/* polo section */
+section.polo{background:var(--card);border:1px solid var(--rule);border-radius:14px;margin-bottom:22px;overflow:hidden}
+.polo-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;padding:16px 20px;border-bottom:1px solid var(--rule)}
+.polo-head h2{font-family:var(--num);font-weight:700;font-size:24px;margin:0;line-height:1.1}
+.polo-head .sub{color:var(--muted);font-size:14px}
+.nivel{display:inline-flex;align-items:center;gap:8px;border-radius:8px;padding:6px 12px;font-weight:600;font-size:14px}
+.nivel .n{font-family:var(--num);font-size:20px;font-weight:700}
+.cd{display:inline-flex;align-items:baseline;gap:6px;border-radius:8px;padding:6px 12px;font-weight:600;font-size:14px;background:var(--soft);color:var(--ink)}
+.cd .n{font-family:var(--num);font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.cd.perto{background:var(--orange-soft);color:var(--orange)} .cd.hoje{background:var(--accent);color:#fff} .cd.feito{color:var(--muted)}
+.head-r{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.nv-vermelho{background:var(--red-soft);color:var(--red)} .nv-laranja{background:var(--orange-soft);color:var(--orange)} .nv-verde{background:var(--green-soft);color:var(--green)}
+.bg-vermelho{background:var(--red)} .bg-laranja{background:var(--orange)} .bg-verde{background:var(--green)}
+.polo-body{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(260px,1fr)}
+.polo-body > div{padding:18px 20px;min-width:0}
+.polo-body.stack{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.polo-body.stack > .full{grid-column:1 / -1;border-bottom:1px solid var(--rule)}
+.polo-body.stack > .full + div{border-left:0}
+.polo-body > div + div{border-left:1px solid var(--rule)}
+@media (max-width:880px){.polo-body,.polo-body.stack{grid-template-columns:1fr}.polo-body > div + div{border-left:0;border-top:1px solid var(--rule)}}
+h3{font-size:14px;font-weight:600;color:var(--muted);margin:0 0 10px}
+
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{font-weight:500;color:var(--muted);text-align:right;padding:6px 8px;border-bottom:1px solid var(--rule);white-space:nowrap;font-size:13px}
+th:first-child,td:first-child{text-align:left}
+td{padding:7px 8px;border-bottom:1px solid var(--soft);text-align:right;font-family:var(--num);font-variant-numeric:tabular-nums;font-size:15px;white-space:nowrap}
+td:first-child{font-family:var(--font);font-weight:500}
+tr.total td{border-top:1px solid var(--ink);border-bottom:0;font-weight:700}
+tr.ind td{color:var(--muted)}
+td.hl{font-weight:700}
+
+.mkt{display:flex;flex-wrap:wrap;gap:8px 26px;margin-top:16px;padding-top:14px;border-top:1px solid var(--soft)}
+.mkt div{display:flex;flex-direction:column}
+.mkt .v{font-family:var(--num);font-weight:700;font-size:21px;font-variant-numeric:tabular-nums}
+.mkt .l{font-size:13px;color:var(--muted)}
+.diff-warn .v{color:var(--orange)} .diff-bad .v{color:var(--red)}
+
+.pipe{display:flex;flex-direction:column;gap:7px}
+.stage{display:grid;grid-template-columns:150px 1fr 42px;align-items:center;gap:10px;font-size:14px}
+.stage .bar{height:14px;background:var(--soft);border-radius:4px;overflow:hidden}
+.stage .bar i{display:block;height:100%;border-radius:4px}
+.stage.hot i{background:var(--hot)} .stage.cold i{background:var(--cold)} .stage.lost i{background:var(--lost)}
+.stage .q{font-family:var(--num);font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.pipe-total{display:flex;justify-content:space-between;border-top:1px solid var(--rule);padding-top:8px;margin-top:4px;font-weight:600}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted);margin:8px 0 14px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.legend .h::before{background:var(--hot)} .legend .c::before{background:var(--cold)} .legend .p::before{background:var(--lost)}
+.ret{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.ret div{background:var(--soft);border-radius:10px;padding:10px 12px}
+.ret .v{font-family:var(--num);font-weight:700;font-size:24px;font-variant-numeric:tabular-nums}
+.ret .l{font-size:13px;color:var(--muted);line-height:1.3}
+
+/* recolher */
+.toggle{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:10px;border-radius:6px}
+.toggle:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.toggle .chev{width:22px;height:22px;border-radius:50%;background:var(--soft);display:grid;place-items:center;transition:transform .2s}
+.toggle .chev::before{content:"";width:7px;height:7px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:translateY(-2px) rotate(45deg)}
+.polo:not(.open) .toggle .chev{transform:rotate(-90deg)}
+.polo:not(.open) .collapsible{display:none}
+.polo:not(.open) .polo-head{border-bottom:0}
+.polo.has-summary:not(.open) .polo-head{border-bottom:1px solid var(--rule)}
+.hint{color:var(--muted);font-size:13px;margin:-18px 0 18px}
+@media (prefers-reduced-motion: reduce){.toggle .chev{transition:none}}
+/* presença */
+.adesao-bar{display:flex;height:16px;border-radius:5px;overflow:hidden;background:var(--soft);margin:10px 0 8px}
+.adesao-bar i{display:block;height:100%}
+.c-heros{background:var(--accent)} .c-cora{background:var(--hot)} .c-sem{background:var(--lost)}
+.keys{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px}
+.keys span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+.psum{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.psum > div{padding:18px 20px;min-width:0}
+.psum > div + div{border-left:1px solid var(--rule)}
+@media (max-width:880px){.psum{grid-template-columns:1fr}.psum > div + div{border-left:0;border-top:1px solid var(--rule)}}
+.pline{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:10px;font-size:14px;color:var(--muted)}
+.pline b{font-family:var(--num);color:var(--ink);font-size:17px}
+.pres-detail{border-top:1px solid var(--rule);padding:18px 20px}
+.plist{display:flex;flex-direction:column;gap:3px;margin-top:10px;padding-top:10px;border-top:1px solid var(--soft);font-size:13px}
+.plist div{display:flex;justify-content:space-between;gap:8px}
+.plist span{color:var(--muted)}
+.plist b{font-family:var(--num);font-weight:700;font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tipos{display:flex;flex-direction:column;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--soft)}
+.tipos > div{display:grid;grid-template-columns:72px auto;align-items:center;gap:4px 10px;font-size:13px}
+.tipos .tl{color:var(--muted)}
+.tipos .tv{font-family:var(--num);font-weight:700;font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tipos .tp{font-family:var(--num);font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.tipos .minibar{width:100%;min-width:40px}
+.tipos .ts{grid-column:2 / -1;font-size:12px;margin-top:-4px}
+.big{font-family:var(--num);font-weight:700;font-size:40px;line-height:1;font-variant-numeric:tabular-nums}
+.pct-cell{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+.minibar{width:60px;height:6px;border-radius:3px;background:var(--soft);overflow:hidden}
+.minibar i{display:block;height:100%;background:var(--accent)}
+
+/* vendedores */
+.meta-line{display:flex;flex-wrap:wrap;gap:8px 28px;margin:-6px 0 22px;color:var(--muted)}
+.meta-line b{color:var(--ink);font-family:var(--num);font-size:18px}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-bottom:28px}
+.vcard{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:18px}
+.vcard h2{font-family:var(--num);font-size:24px;margin:0 0 2px}
+.vcard .rank{color:var(--muted);font-size:13px}
+.prog{height:10px;background:var(--soft);border-radius:5px;overflow:hidden;margin:12px 0 6px;position:relative}
+.prog i{display:block;height:100%;border-radius:5px;background:var(--accent)}
+.prog.over i{background:var(--green)}
+.kv{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:14px;margin-top:12px}
+.kv span:nth-child(even){font-family:var(--num);font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.panel{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:18px 20px;margin-bottom:22px}
+.panel h2{font-family:var(--num);font-size:22px;margin:0 0 12px}
+footer{color:var(--muted);font-size:13px;margin-top:30px}
+/* ranking anual */
+.anual-tbl{overflow-x:auto;-webkit-overflow-scrolling:touch;background:var(--card);border:1px solid var(--rule);border-radius:14px;margin-bottom:14px}
+.anual-tbl table{min-width:760px}
+.anual-tbl th,.anual-tbl td{text-align:center;padding:8px 6px}
+.anual-tbl th:first-child,.anual-tbl td:first-child{text-align:left;position:sticky;left:0;background:var(--card);z-index:1;padding-left:16px;min-width:128px;box-shadow:1px 0 0 var(--rule)}
+.anual-tbl thead th{padding-top:12px}
+.anual-tbl td.c{padding:5px 4px}
+.anual-tbl td.c span{display:inline-block;min-width:34px;padding:3px 6px;border-radius:6px;font-weight:700}
+.anual-tbl .c-verde span{background:var(--green-soft);color:var(--green)} .anual-tbl .c-laranja span{background:var(--orange-soft);color:var(--orange)} .anual-tbl .c-vermelho span{background:var(--red-soft);color:var(--red)}
+.anual-tbl td.vazio{color:var(--lost)}
+.anual-tbl td.tot{font-weight:700;border-left:1px solid var(--rule)}
+.anual-tbl th.tot{border-left:1px solid var(--rule)}
+.anual-tbl tr.sum td{background:var(--soft);font-weight:600;border-bottom:1px solid var(--card)}
+.anual-tbl tr.sum td:first-child{background:var(--soft);font-family:var(--font)}
+.anual-tbl tr.sum.first td{border-top:2px solid var(--ink)}
+.anual-tbl tr.sum.strong td{font-weight:700}
+.anual-tbl .grp{display:block;font-size:12px;color:var(--muted);font-weight:500}
+.anual-tbl th.pend{color:var(--lost)}
+.nota{color:var(--muted);font-size:13px;margin:0 0 22px}
+.anual-tbl.conv table{min-width:560px}
+.anual-tbl.conv td.c span{min-width:52px}
+.anual-tbl.conv td.meta{color:var(--muted)}
+.anual-tbl.conv tr.sum td{font-weight:700}
+.sec-h{font-family:var(--num);font-size:22px;margin:30px 0 4px}
+.sec-sub{color:var(--muted);margin:0 0 14px}
+.chave{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);margin:-14px 0 16px}
+.chave span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+/* abas */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--rule);margin:0 0 24px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{all:unset;cursor:pointer;white-space:nowrap;padding:10px 14px 11px;font-weight:600;font-size:15px;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px;border-radius:6px 6px 0 0}
+.tab:hover{color:var(--ink);background:var(--soft)}
+.tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.tab:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.upd{display:inline-flex;align-items:center;gap:6px;margin:8px 0 0;padding:4px 10px;border-radius:999px;background:color-mix(in srgb,var(--muted) 14%,transparent);color:var(--muted);font-size:13px;font-weight:500}
+.upd:empty{display:none}
+.upd::before{content:"";width:7px;height:7px;border-radius:50%;background:#2e9e5b}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1 id="title">Conversão por Polo</h1>
+      <p id="subtitle">Leads, vendas por consultor e temperatura da pipeline de cada encontro</p>
+      <p id="upd" class="upd" aria-live="polite"></p>
+    </div>
+    <div class="controls">
+      <label class="sr" for="mes" style="position:absolute;left:-9999px">Mês de referência</label>
+      <select id="mes" aria-label="Mês de referência" disabled><option>Carregando…</option></select>
+    </div>
+  </header>
+  <nav class="tabs" role="tablist" aria-label="Indicadores">
+    <button class="tab" role="tab" data-tab="conversao" aria-selected="true" aria-controls="app">Conversão por Polo</button>
+    <button class="tab" role="tab" data-tab="presenca" aria-selected="false" aria-controls="app">Ficha de Presença</button>
+    <button class="tab" role="tab" data-tab="vendedores" aria-selected="false" aria-controls="app">Desempenho por Vendedor</button>
+    <button class="tab" role="tab" data-tab="anual" aria-selected="false" aria-controls="app">Ranking Anual</button>
+  </nav>
+  <main id="app" role="tabpanel"><div class="state"><strong>Carregando dados…</strong></div></main>
+  <footer id="foot"></footer><p class="nota" style="margin-top:8px">Versão de consulta gerada em 06/10/2026 às 16:12.</p>
+</div>
+<script>
+/* ---- versão estática: dados embutidos no lugar do banco do artefato ---- */
+const SNAP = {"conversaoVendedor": [{"id": "2026", "data": {"ano": 2026, "fonte": "Jan a ago: Controle de Conversão LEADS - 2026.xlsx/backup; set: vendas da LISTA DE PRESENÇA GERAL + leads da planilha original; de outubro em diante, dados do artefato. % venda = vendas ÷ total recebido (recebidos + reabertos)", "meses": {"01": {"Beatriz": {"reabertos": 140, "recebidos": 437, "vendas": 54}, "Caroline": {"reabertos": 24, "recebidos": 483, "vendas": 47}, "Jonathan": {"reabertos": 239, "recebidos": 384, "vendas": 58}}, "02": {"Alice": {"reabertos": 2, "recebidos": 117, "vendas": 8}, "Beatriz": {"reabertos": 71, "recebidos": 380, "vendas": 48}, "Caroline": {"reabertos": 57, "recebidos": 370, "vendas": 35}, "Jonathan": {"reabertos": 170, "recebidos": 195, "vendas": 49}}, "03": {"Alice": {"reabertos": 13, "recebidos": 137, "vendas": 16}, "Beatriz": {"reabertos": 67, "recebidos": 281, "vendas": 29}, "Caroline": {"reabertos": 41, "recebidos": 249, "vendas": 29}, "Jonathan": {"reabertos": 104, "recebidos": 76, "vendas": 26}}, "04": {"Alice": {"reabertos": 21, "recebidos": 185, "vendas": 15}, "Beatriz": {"reabertos": 52, "recebidos": 198, "vendas": 19}, "Caroline": {"reabertos": 35, "recebidos": 211, "vendas": 37}, "Jonathan": {"reabertos": 84, "recebidos": 51, "vendas": 21}}, "05": {"Alice": {"reabertos": 21, "recebidos": 269, "vendas": 21}, "Beatriz": {"reabertos": 70, "recebidos": 290, "vendas": 18}, "Caroline": {"reabertos": 53, "recebidos": 262, "vendas": 37}, "Jonathan": {"reabertos": 62, "recebidos": 84, "vendas": 12}}, "06": {"Alice": {"reabertos": 27, "recebidos": 126, "vendas": 5}, "Beatriz": {"reabertos": 45, "recebidos": 128, "vendas": 24}, "Caroline": {"reabertos": 43, "recebidos": 127, "vendas": 14}, "Jonathan": {"reabertos": 46, "recebidos": 43, "vendas": 18}}, "07": {"Alice": {"reabertos": 3, "recebidos": 23, "vendas": 0}, "Beatriz": {"reabertos": 43, "recebidos": 190, "vendas": 24}, "Caroline": {"reabertos": 35, "recebidos": 171, "vendas": 21}, "Jonathan": {"reabertos": 45, "recebidos": 82, "vendas": 21}}, "08": {"Beatriz": {"reabertos": 56, "recebidos": 284, "vendas": 36}, "Caroline": {"reabertos": 46, "recebidos": 273, "vendas": 24}, "Jonathan": {"reabertos": 70, "recebidos": 145, "vendas": 22}}, "09": {"Beatriz": {"reabertos": 59, "recebidos": 247, "vendas": 29}, "Caroline": {"reabertos": 54, "recebidos": 247, "vendas": 26}, "Jonathan": {"reabertos": 85, "recebidos": 150, "vendas": 26}}}, "meta": 12, "ordem": ["Caroline", "Beatriz", "Jonathan", "Alice"]}}], "meses": [{"id": "2026-09", "data": {"mes": "2026-09", "meta": {"eventos": 6, "metaConsultor": 30, "metaMes": 90, "metaPorEvento": 15}, "nome": "Setembro 2026"}}, {"id": "2026-10", "data": {"mes": "2026-10", "meta": {"eventos": 10, "metaConsultor": 50, "metaMes": 150, "metaPorEvento": 15}, "nome": "Outubro 2026"}}], "polos": [{"id": "2026-09_butanta", "data": {"atualizadoEm": "2026-10-01T13:45:00-03:00", "campanha": {"mkt": 119, "periodo": "29/08 a 14/09"}, "mes": "2026-09", "ordem": 3, "origem": "lista-presenca-geral + planilha original (leads/pipeline)", "pipeline": {"conexao": 48, "perdido": 41, "proposta": 9, "prospeccao": 53, "recontato": 269, "totalAberto": 385, "vendasAberto": 2}, "polo": "Butantã", "presenca": {"adesao": {"cora": 0, "heros": 0, "semPagamento": 0}, "associados": {"faltas": 1, "qtd": 13}, "empresas": {"faltas": 1, "qtd": 7}, "socios": {"faltas": 0, "qtd": 0}}, "vendedores": [{"empresas": 1, "nome": "Jonathan", "reabertos": 5, "realocado": 0, "recebidos": 15, "recontatoBase": 100, "vendas": 1}, {"empresas": 0, "nome": "Beatriz", "reabertos": 5, "realocado": 0, "recebidos": 36, "recontatoBase": 100, "vendas": 0}, {"empresas": 1, "nome": "Caroline", "reabertos": 6, "realocado": 0, "recebidos": 41, "recontatoBase": 100, "vendas": 1}, {"empresas": 5, "indicacao": true, "nome": "Indicação", "reabertos": 0, "realocado": 0, "recebidos": 5, "recontatoBase": 0, "vendas": 5}]}}, {"id": "2026-09_faria-lima", "data": {"atualizadoEm": "2026-10-01T13:45:00-03:00", "campanha": {"mkt": 180, "periodo": "17/08 a 02/09"}, "mes": "2026-09", "ordem": 1, "origem": "lista-presenca-geral + planilha original (leads/pipeline)", "pipeline": {"conexao": 81, "perdido": 37, "proposta": 23, "prospeccao": 64, "recontato": 245, "totalAberto": 438, "vendasAberto": 2}, "polo": "Faria Lima", "presenca": {"adesao": {"cora": 0, "heros": 1, "semPagamento": 2}, "associados": {"faltas": 1, "qtd": 6}, "empresas": {"faltas": 1, "qtd": 9}, "socios": {"faltas": 0, "qtd": 1}}, "vendedores": [{"empresas": 6, "nome": "Jonathan", "reabertos": 19, "realocado": 0, "recebidos": 38, "recontatoBase": 100, "vendas": 6}, {"empresas": 1, "nome": "Beatriz", "reabertos": 13, "realocado": 0, "recebidos": 51, "recontatoBase": 100, "vendas": 2}, {"empresas": 2, "nome": "Caroline", "reabertos": 12, "realocado": 0, "recebidos": 48, "recontatoBase": 100, "vendas": 2}, {"empresas": 0, "indicacao": true, "nome": "Indicação", "reabertos": 0, "realocado": 0, "recebidos": 0, "recontatoBase": 0, "vendas": 0}]}}, {"id": "2026-09_grande-abc", "data": {"atualizadoEm": "2026-10-01T13:45:00-03:00", "campanha": {"mkt": 127, "periodo": "01/09 a 17/09"}, "mes": "2026-09", "ordem": 5, "origem": "lista-presenca-geral + planilha original (leads/pipeline)", "pipeline": {"conexao": 44, "perdido": 45, "proposta": 18, "prospeccao": 62, "recontato": 257, "totalAberto": 380, "vendasAberto": 1}, "polo": "Grande ABC", "presenca": {"adesao": {"cora": 0, "heros": 1, "semPagamento": 0}, "associados": {"faltas": 0, "qtd": 5}, "empresas": {"faltas": 2, "qtd": 11}, "socios": {"faltas": 0, "qtd": 0}}, "vendedores": [{"empresas": 0, "nome": "Jonathan", "reabertos": 12, "realocado": 0, "recebidos": 16, "recontatoBase": 100, "vendas": 0}, {"empresas": 4, "nome": "Beatriz", "reabertos": 10, "realocado": 0, "recebidos": 41, "recontatoBase": 100, "vendas": 4}, {"empresas": 6, "nome": "Caroline", "reabertos": 6, "realocado": 0, "recebidos": 39, "recontatoBase": 100, "vendas": 6}, {"empresas": 1, "indicacao": true, "nome": "Indicação", "reabertos": 0, "realocado": 0, "recebidos": 1, "recontatoBase": 0, "vendas": 1}]}}, {"id": "2026-09_granja-viana", "data": {"atualizadoEm": "2026-10-01T13:45:00-03:00", "campanha": {"mkt": 147, "periodo": "30/08 a 15/09"}, "mes": "2026-09", "ordem": 4, "origem": "lista-presenca-geral + planilha original (leads/pipeline)", "pipeline": {"conexao": 52, "perdido": 54, "proposta": 15, "prospeccao": 63, "recontato": 245, "totalAberto": 379, "vendasAberto": 2}, "polo": "Granja Viana", "presenca": {"adesao": {"cora": 0, "heros": 3, "semPagamento": 1}, "associados": {"faltas": 3, "qtd": 13}, "empresas": {"faltas": 2, "qtd": 20}, "socios": {"faltas": 2, "qtd": 5}}, "vendedores": [{"empresas": 8, "nome": "Jonathan", "reabertos": 18, "realocado": 0, "recebidos": 24, "recontatoBase": 100, "vendas": 9}, {"empresas": 10, "nome": "Beatriz", "reabertos": 12, "realocado": 2, "recebidos": 39, "recontatoBase": 100, "vendas": 12}, {"empresas": 2, "nome": "Caroline", "reabertos": 9, "realocado": 0, "recebidos": 39, "recontatoBase": 100, "vendas": 2}, {"empresas": 0, "indicacao": true, "nome": "Indicação", "reabertos": 0, "realocado": 0, "recebidos": 0, "recontatoBase": 0, "vendas": 0}]}}, {"id": "2026-09_santo-amaro", "data": {"atualizadoEm": "2026-10-01T13:45:00-03:00", "campanha": {"mkt": 98, "periodo": "23/08 a 08/09"}, "mes": "2026-09", "ordem": 2, "origem": "lista-presenca-geral + planilha original (leads/pipeline)", "pipeline": {"conexao": 50, "perdido": 38, "proposta": 11, "prospeccao": 57, "recontato": 240, "totalAberto": 363, "vendasAberto": 1}, "polo": "Santo Amaro", "presenca": {"adesao": {"cora": 0, "heros": 2, "semPagamento": 2}, "associados": {"faltas": 1, "qtd": 9}, "empresas": {"faltas": 5, "qtd": 16}, "socios": {"faltas": 0, "qtd": 3}}, "vendedores": [{"empresas": 5, "nome": "Jonathan", "reabertos": 13, "realocado": 1, "recebidos": 23, "recontatoBase": 100, "vendas": 4}, {"empresas": 7, "nome": "Beatriz", "reabertos": 8, "realocado": 0, "recebidos": 34, "recontatoBase": 100, "vendas": 7}, {"empresas": 4, "nome": "Caroline", "reabertos": 10, "realocado": 0, "recebidos": 36, "recontatoBase": 100, "vendas": 7}, {"empresas": 0, "indicacao": true, "nome": "Indicação", "reabertos": 0, "realocado": 0, "recebidos": 0, "recontatoBase": 0, "vendas": 0}]}}, {"id": "2026-09_tatuape", "data": {"atualizadoEm": "2026-10-01T13:45:00-03:00", "campanha": {"mkt": 159, "periodo": "13/09 a 29/09"}, "mes": "2026-09", "ordem": 6, "origem": "lista-presenca-geral + planilha original (leads/pipeline)", "pipeline": {"conexao": 81, "perdido": 34, "proposta": 22, "prospeccao": 61, "recontato": 246, "totalAberto": 424, "vendasAberto": 0}, "polo": "Tatuapé", "presenca": {"adesao": {"cora": 0, "heros": 1, "semPagamento": 0}, "associados": {"faltas": 4, "qtd": 16}, "empresas": {"faltas": 5, "qtd": 21}, "socios": {"faltas": 0, "qtd": 0}}, "vendedores": [{"empresas": 6, "nome": "Jonathan", "reabertos": 18, "realocado": 0, "recebidos": 34, "recontatoBase": 100, "vendas": 6}, {"empresas": 4, "nome": "Beatriz", "reabertos": 11, "realocado": 0, "recebidos": 46, "recontatoBase": 100, "vendas": 4}, {"empresas": 9, "nome": "Caroline", "reabertos": 11, "realocado": 1, "recebidos": 44, "recontatoBase": 100, "vendas": 8}, {"empresas": 2, "indicacao": true, "nome": "Indicação", "reabertos": 0, "realocado": 0, "recebidos": 2, "recontatoBase": 0, "vendas": 2}]}}, {"id": "2026-10_butanta", "data": {"atualizadoEm": "2026-10-06T11:36:00-03:00", "campanha": {"mkt": 134, "periodo": "20/09 a 06/10"}, "mes": "2026-10", "ordem": 1, "origem": "planilha-automacao", "pipeline": {"conexao": 58, "perdido": 34, "proposta": 5, "prospeccao": 58, "recontato": 261, "totalAberto": 384, "vendasAberto": 1}, "polo": "Butantã", "presenca": null, "vendedores": [{"empresas": 1, "nome": "Jonathan", "reabertos": 4, "realocado": 0, "recebidos": 12, "recontatoBase": 100, "vendas": 1}, {"empresas": 4, "nome": "Beatriz", "reabertos": 9, "realocado": 0, "recebidos": 48, "recontatoBase": 100, "vendas": 4}, {"empresas": 2, "nome": "Caroline", "reabertos": 6, "realocado": 0, "recebidos": 46, "recontatoBase": 100, "vendas": 2}, {"empresas": 0, "indicacao": true, "nome": "Indicação", "reabertos": 0, "realocado": 0, "recebidos": 0, "recontatoBase": 0, "vendas": 0}]}}, {"id": "2026-10_faria-lima", "data": {"atualizadoEm": "2026-10-06T11:36:00-03:00", "campanha": {"mkt": 147, "periodo": "21/09 a 07/10"}, "mes": "2026-10", "ordem": 2, "origem": "planilha-automacao", "pipeline": {"conexao": 62, "perdido": 27, "proposta": 12, "prospeccao": 59, "recontato": 264, "totalAberto": 401, "vendasAberto": 3}, "polo": "Faria Lima", "presenca": null, "vendedores": [{"empresas": 3, "nome": "Jonathan", "reabertos": 13, "realocado": 0, "recebidos": 22, "recontatoBase": 100, "vendas": 3}, {"empresas": 5, "nome": "Beatriz", "reabertos": 16, "realocado": 0, "recebidos": 41, "recontatoBase": 100, "vendas": 5}, {"empresas": 2, "nome": "Caroline", "reabertos": 8, "realocado": 1, "recebidos": 36, "recontatoBase": 100, "vendas": 1}, {"empresas": 0, "indicacao": true, "nome": "Indicação", "reabertos": 0, "realocado": 0, "recebidos": 0, "recontatoBase": 0, "vendas": 0}]}}, {"id": "2026-10_grande-abc", "data": {"atualizadoEm": "2026-10-06T11:36:00-03:00", "campanha": {"mkt": 132, "periodo": "22/09 a 08/10"}, "mes": "2026-10", "ordem": 3, "origem": "planilha-automacao", "pipeline": {"conexao": 60, "perdido": 25, "proposta": 10, "prospeccao": 62, "recontato": 264, "totalAberto": 400, "vendasAberto": 2}, "polo": "Grande ABC", "presenca": null, "vendedores": [{"empresas": 3, "nome": "Jonathan", "reabertos": 5, "realocado": 0, "recebidos": 21, "recontatoBase": 100, "vendas": 3}, {"empresas": 3, "nome": "Beatriz", "reabertos": 9, "realocado": 2, "recebidos": 43, "recontatoBase": 100, "vendas": 1}, {"empresas": 2, "nome": "Caroline", "reabertos": 7, "realocado": 0, "recebidos": 35, "recontatoBase": 100, "vendas": 3}, {"empresas": 0, "indicacao": true, "nome": "Indicação", "reabertos": 0, "realocado": 0, "recebidos": 0, "recontatoBase": 0, "vendas": 0}]}}, {"id": "2026-10_granja-viana", "data": {"atualizadoEm": "2026-10-06T11:36:00-03:00", "campanha": {"mkt": 22, "periodo": "04/10 a 20/10"}, "mes": "2026-10", "ordem": 6, "origem": "planilha-automacao", "pipeline": {"conexao": 5, "perdido": 0, "proposta": 2, "prospeccao": 22, "recontato": 2, "totalAberto": 35, "vendasAberto": 1}, "polo": "Granja Viana", "presenca": null, "vendedores": [{"empresas": 0, "nome": "Jonathan", "reabertos": 4, "realocado": 0, "recebidos": 5, "recontatoBase": 0, "vendas": 0}, {"empresas": 1, "nome": "Beatriz", "reabertos": 1, "realocado": 2, "recebidos": 5, "recontatoBase": 0, "vendas": 0}, {"empresas": 0, "nome": "Caroline", "reabertos": 2, "realocado": 0, "recebidos": 6, "recontatoBase": 0, "vendas": 0}, {"empresas": 0, "indicacao": true, "nome": "Indicação", "reabertos": 0, "realocado": 0, "recebidos": 0, "recontatoBase": 0, "vendas": 0}]}}, {"id": "2026-10_lapa", "data": {"atualizadoEm": "2026-10-06T11:36:00-03:00", "campanha": {"mkt": 13, "periodo": "06/10 a 21/10"}, "mes": "2026-10", "ordem": 7, "origem": "planilha-automacao", "pipeline": {"conexao": 3, "perdido": 0, "proposta": 3, "prospeccao": 7, "recontato": 0, "totalAberto": 16, "vendasAberto": 0}, "polo": "Lapa", "presenca": null, "vendedores": [{"empresas": 1, "nome": "Jonathan", "reabertos": 0, "realocado": 0, "recebidos": 0, "recontatoBase": 0, "vendas": 1}, {"empresas": 0, "nome": "Beatriz", "reabertos": 0, "realocado": 0, "recebidos": 1, "recontatoBase": 0, "vendas": 0}, {"empresas": 0, "nome": "Caroline", "reabertos": 0, "realocado": 0, "recebidos": 1, "recontatoBase": 0, "vendas": 0}, {"empresas": 0, "indicacao": true, "nome": "Indicação", "reabertos": 0, "realocado": 0, "recebidos": 0, "recontatoBase": 0, "vendas": 0}]}}, {"id": "2026-10_santo-amaro", "data": {"atualizadoEm": "2026-10-06T11:45:00-03:00", "campanha": {"mkt": 62, "periodo": "27/09 a 13/10"}, "mes": "2026-10", "ordem": 4, "origem": "planilha-automacao", "pipeline": {"conexao": 22, "perdido": 5, "proposta": 3, "prospeccao": 27, "recontato": 298, "totalAberto": 356, "vendasAberto": 0}, "polo": "Santo Amaro", "presenca": null, "vendedores": [{"empresas": 3, "nome": "Jonathan", "reabertos": 1, "realocado": 0, "recebidos": 10, "recontatoBase": 100, "vendas": 3}, {"empresas": 2, "nome": "Beatriz", "reabertos": 7, "realocado": 1, "recebidos": 17, "recontatoBase": 100, "vendas": 1}, {"empresas": 4, "nome": "Caroline", "reabertos": 3, "realocado": 1, "recebidos": 20, "recontatoBase": 100, "vendas": 3}, {"empresas": 0, "indicacao": true, "nome": "Indicação", "reabertos": 0, "realocado": 0, "recebidos": 0, "recontatoBase": 0, "vendas": 0}]}}, {"id": "2026-10_santos", "data": {"atualizadoEm": "2026-10-06T11:36:00-03:00", "campanha": {"mkt": 133, "periodo": "28/09 a 14/10"}, "mes": "2026-10", "ordem": 5, "origem": "planilha-automacao", "pipeline": {"conexao": 29, "perdido": 7, "proposta": 8, "prospeccao": 69, "recontato": 1, "totalAberto": 122, "vendasAberto": 3}, "polo": "Santos", "presenca": null, "vendedores": [{"empresas": 0, "nome": "Jonathan", "reabertos": 9, "realocado": 0, "recebidos": 16, "recontatoBase": 0, "vendas": 0}, {"empresas": 0, "nome": "Beatriz", "reabertos": 5, "realocado": 0, "recebidos": 49, "recontatoBase": 0, "vendas": 0}, {"empresas": 2, "nome": "Caroline", "reabertos": 6, "realocado": 0, "recebidos": 42, "recontatoBase": 0, "vendas": 2}, {"empresas": 0, "indicacao": true, "nome": "Indicação", "reabertos": 0, "realocado": 0, "recebidos": 0, "recontatoBase": 0, "vendas": 0}]}}, {"id": "2026-10_sorocaba", "data": {"atualizadoEm": "2026-10-06T11:36:00-03:00", "campanha": {"mkt": 3, "periodo": "05/10 a 22/10"}, "mes": "2026-10", "ordem": 8, "origem": "planilha-automacao", "pipeline": {"conexao": 1, "perdido": 0, "proposta": 0, "prospeccao": 1, "recontato": 0, "totalAberto": 6, "vendasAberto": 0}, "polo": "Sorocaba", "presenca": null, "vendedores": [{"empresas": 0, "nome": "Jonathan", "reabertos": 0, "realocado": 0, "recebidos": 0, "recontatoBase": 0, "vendas": 0}, {"empresas": 0, "nome": "Beatriz", "reabertos": 1, "realocado": 0, "recebidos": 0, "recontatoBase": 0, "vendas": 0}, {"empresas": 0, "nome": "Caroline", "reabertos": 0, "realocado": 0, "recebidos": 1, "recontatoBase": 0, "vendas": 0}, {"empresas": 0, "indicacao": true, "nome": "Indicação", "reabertos": 0, "realocado": 0, "recebidos": 0, "recontatoBase": 0, "vendas": 0}]}}], "ranking": [{"id": "2026", "data": {"ano": 2026, "fonte": "Relatorio Conversão de Polos 2026.xlsx, aba Meta 10+ (jan a ago); de setembro em diante o indicador calcula ao fechar o mês", "grupo": {"Sorocaba": "Poder do Networking"}, "meses": {"01": {"Alphaville": 24, "Butantã": 16, "Faria Lima": 16, "Grande ABC": 14, "Granja Viana": 8, "Lapa": 10, "Osasco": 6, "Santo Amaro": 12, "Santos": 8, "Tatuapé": 18, "Vila Maria": 17}, "02": {"Alphaville": 10, "Butantã": 17, "Faria Lima": 12, "Grande ABC": 11, "Granja Viana": 22, "Santo Amaro": 14, "Santos": 6, "Sorocaba": 16, "Tatuapé": 26}, "03": {"Butantã": 3, "Faria Lima": 13, "Grande ABC": 14, "Granja Viana": 15, "Lapa": 17, "Santo Amaro": 15, "Santos": 11, "Tatuapé": 22}, "04": {"Faria Lima": 11, "Grande ABC": 15, "Granja Viana": 12, "Santo Amaro": 23, "Sorocaba": 17, "Tatuapé": 14}, "05": {"Butantã": 8, "Faria Lima": 13, "Grande ABC": 14, "Granja Viana": 6, "Lapa": 11, "Santo Amaro": 11, "Santos": 9, "Tatuapé": 19}, "06": {"Alphaville": 9, "Butantã": 2, "Grande ABC": 13, "Granja Viana": 11, "Santo Amaro": 13, "Tatuapé": 17}, "07": {"Faria Lima": 7, "Grande ABC": 19, "Santo Amaro": 10, "Tatuapé": 28}, "08": {"Faria Lima": 18, "Grande ABC": 10, "Granja Viana": 12, "Santo Amaro": 9, "Santos": 10, "Sorocaba": 9, "Tatuapé": 21}}, "meta": 10, "polos": ["Tatuapé", "Faria Lima", "Granja Viana", "Santo Amaro", "Lapa", "Santos", "Vila Maria", "Alphaville", "Osasco", "Butantã", "Grande ABC", "Sorocaba"]}}]};
+const SNAP_GERADO = "06/10/2026 \u00e0s 16:12";
+function snapDb() {
+  const mk = (id, data) => ({id, exists: true, data: () => data});
+  const cmp = {"==": (a, b) => a === b, ">=": (a, b) => a >= b, "<=": (a, b) => a <= b, ">": (a, b) => a > b, "<": (a, b) => a < b};
+  const q = (c, filters, order) => {
+    const run = () => {
+      let docs = (SNAP[c] || []).filter(d => filters.every(([f, op, v]) => cmp[op](d.data[f], v)));
+      if (order) docs = [...docs].sort((a, b) => (a.data[order[0]] > b.data[order[0]] ? 1 : -1) * (order[1] === "desc" ? -1 : 1));
+      return {docs: docs.map(d => mk(d.id, d.data))};
+    };
+    return {
+      where: (f, op, v) => q(c, [...filters, [f, op, v]], order),
+      orderBy: (f, dir) => q(c, filters, [f, dir || "asc"]),
+      onSnapshot: cb => { setTimeout(() => cb(run())); return () => {}; },
+      get: () => Promise.resolve(run())
+    };
+  };
+  return {
+    collection: c => q(c, [], null),
+    doc: path => {
+      const [c, id] = path.split("/"); const d = (SNAP[c] || []).find(x => x.id === id);
+      const snap = d ? mk(id, d.data) : {id, exists: false, data: () => null};
+      return {onSnapshot: cb => { setTimeout(() => cb(snap)); return () => {}; }, get: () => Promise.resolve(snap)};
+    }
+  };
+}
+
+const TABS = {
+  conversao: ["Conversão por Polo", "Leads, vendas por consultor e temperatura da pipeline de cada encontro"],
+  presenca: ["Análise Ficha de Presença", "Presença e adesão de cada encontro realizado"],
+  vendedores: ["Desempenho por Vendedor", "Atingimento da meta mensal por consultor, medido em empresas"],
+  anual: ["Ranking Anual de Conversão", "Empresas por encontro em cada polo ao longo do ano — meta de 10 empresas por evento"]
+};
+let PAGE = "conversao";
+try { const h = location.hash.slice(1), s = localStorage.getItem("cae-aba"); PAGE = TABS[h] ? h : TABS[s] ? s : PAGE; } catch (e) {}
+const app = document.getElementById("app");
+const sel = document.getElementById("mes");
+const NF = new Intl.NumberFormat("pt-BR");
+const n = v => (v == null || isNaN(v)) ? "—" : NF.format(v);
+const pctNum = (a, b) => (b ? a / b * 100 : null);
+const p = (a, b) => { const x = pctNum(a, b); return x == null ? "—" : x.toLocaleString("pt-BR", {minimumFractionDigits: 1, maximumFractionDigits: 1}) + "%"; };
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const num = v => +v || 0;
+const nivel = e => e >= 10 ? "verde" : e >= 5 ? "laranja" : "vermelho";
+const slug = s => String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+const isInd = v => v.indicacao || /indica/i.test(v.nome || "");
+
+function tot(pl) {
+  const v = pl.vendedores || [];
+  const s = k => v.reduce((a, x) => a + num(x[k]), 0);
+  const rec = s("recebidos"), rea = s("reabertos"), vendas = s("vendas"), realoc = s("realocado");
+  return {rec, rea, total: rec + rea, base: s("recontatoBase"), vendas, realoc, emp: s("empresas"), pessoas: vendas + realoc};
+}
+const STAGES = [
+  ["vendasAberto", "Vendas em aberto", "hot"], ["proposta", "Proposta/Negociação", "hot"], ["conexao", "Conexão", "hot"],
+  ["prospeccao", "Prospecção", "cold"], ["recontato", "Recontato", "cold"], ["perdido", "Perdido", "lost"]
+];
+function pipeTotal(pp) { return pp.totalAberto != null ? num(pp.totalAberto) : STAGES.reduce((a, s) => a + num(pp[s[0]]), 0); }
+function pres(pl) {
+  const f = pl.presenca; if (!f) return null;
+  const row = k => ({qtd: num(f[k]?.qtd), faltas: num(f[k]?.faltas), pres: num(f[k]?.qtd) - num(f[k]?.faltas)});
+  const e = row("empresas"), s = row("socios"), a = row("associados");
+  const pe = {qtd: e.qtd + s.qtd + a.qtd, faltas: e.faltas + s.faltas + a.faltas}; pe.pres = pe.qtd - pe.faltas;
+  const ad = f.adesao || {}; const heros = num(ad.heros), cora = num(ad.cora), sem = num(ad.semPagamento);
+  return {pessoas: pe, empresas: e, socios: s, associados: a, heros, cora, sem, adesao: heros + cora + sem};
+}
+function vendorOrder(polos) {
+  const names = [];
+  polos.forEach(pl => (pl.vendedores || []).forEach(v => { if (!names.includes(v.nome)) names.push(v.nome); }));
+  return names.filter(x => !/indica/i.test(x)).concat(names.filter(x => /indica/i.test(x)));
+}
+/* dias até o evento: data do encontro = término da campanha (ou dataEvento, se houver) */
+function dataEvento(pl) {
+  const ano0 = +String(pl.mes || "").slice(0, 4) || new Date().getFullYear(), mes0 = +String(pl.mes || "").slice(5, 7) || 0;
+  const mk = (d, m, y) => { if (!d || !m) return null; if (!y) y = (mes0 === 12 && m === 1) ? ano0 + 1 : (mes0 === 1 && m === 12) ? ano0 - 1 : ano0; if (y < 100) y += 2000; return Date.UTC(y, m - 1, d); };
+  const de = String(pl.dataEvento || "");
+  let m = de.match(/^(\d{4})-(\d{2})-(\d{2})/); if (m) return Date.UTC(+m[1], +m[2] - 1, +m[3]);
+  m = de.match(/(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?/); if (m) return mk(+m[1], +m[2], +m[3]);
+  const ds = [...String(pl.campanha?.periodo || "").matchAll(/(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?/g)];
+  if (ds.length) { const x = ds[ds.length - 1]; return mk(+x[1], +x[2], +x[3]); }
+  return null;
+}
+function hojeSP() { const [d, mo, y] = new Date().toLocaleDateString("pt-BR", {timeZone: "America/Sao_Paulo"}).split("/").map(Number); return Date.UTC(y, mo - 1, d); }
+function diasPill(pl) {
+  const ev = dataEvento(pl); if (ev == null) return "";
+  const d = Math.round((ev - hojeSP()) / 864e5);
+  const dt = new Date(ev).toLocaleDateString("pt-BR", {timeZone: "UTC", day: "2-digit", month: "2-digit"});
+  if (d === 0) return `<span class="cd hoje" title="Encontro em ${dt}">Encontro hoje</span>`;
+  if (d < 0) return `<span class="cd feito" title="Encontro em ${dt}">Realizado</span>`;
+  return `<span class="cd ${d <= 7 ? "perto" : ""}" title="Encontro em ${dt}">Faltam <span class="n">${n(d)}</span> ${d === 1 ? "dia" : "dias"}</span>`;
+}
+function nivelPill(e) {
+  const k = nivel(e);
+  return `<span class="nivel nv-${k}" title="Nível pela quantidade de empresas: menos de 5 vermelho, 5 a 9 laranja, 10 ou mais verde"><span class="n">${n(e)}</span> empresas</span>`;
+}
+
+/* ---------- recolher / expandir ---------- */
+let openSet = new Set();
+function loadOpen() { openSet = new Set(); try { openSet = new Set(JSON.parse(localStorage.getItem("cae-abertos-" + PAGE) || "[]")); } catch (e) {} }
+function saveOpen() { try { localStorage.setItem("cae-abertos-" + PAGE, JSON.stringify([...openSet])); } catch (e) {} }
+loadOpen();
+function toggleBtn(pl, sub) {
+  const k = slug(pl.polo), o = openSet.has(k);
+  return `<div><h2><button class="toggle" data-k="${k}" aria-expanded="${o}" aria-controls="b-${k}"><span class="chev" aria-hidden="true"></span>${esc(pl.polo)}</button></h2>${sub ? `<div class="sub" style="margin-left:32px">${sub}</div>` : ""}</div>`;
+}
+const isOpen = pl => openSet.has(slug(pl.polo)) ? "open" : "";
+document.addEventListener("click", e => {
+  const b = e.target.closest(".toggle"); const chip = e.target.closest(".thermo a");
+  if (b) {
+    const k = b.dataset.k, sec = b.closest(".polo");
+    if (openSet.has(k)) openSet.delete(k); else openSet.add(k);
+    sec.classList.toggle("open", openSet.has(k)); b.setAttribute("aria-expanded", openSet.has(k)); saveOpen();
+  } else if (chip) {
+    const k = chip.getAttribute("href").slice(3); openSet.add(k); saveOpen();
+    const sec = document.getElementById("p-" + k); if (sec) { sec.classList.add("open"); sec.querySelector(".toggle")?.setAttribute("aria-expanded", "true"); }
+  }
+});
+function expandAllBar() {
+  return `<div class="hint">Clique no nome do polo para expandir ou recolher. <button class="toggle" style="color:var(--accent);font-weight:600" onclick="document.querySelectorAll('.polo').forEach(s=>{const b=s.querySelector('.toggle[data-k]');openSet.add(b.dataset.k);s.classList.add('open');b.setAttribute('aria-expanded','true')});saveOpen()">Expandir todos</button> <button class="toggle" style="color:var(--accent);font-weight:600;margin-left:10px" onclick="document.querySelectorAll('.polo').forEach(s=>{const b=s.querySelector('.toggle[data-k]');openSet.delete(b.dataset.k);s.classList.remove('open');b.setAttribute('aria-expanded','false')});saveOpen()">Recolher todos</button></div>`;
+}
+
+/* ---------- Conversão por polo ---------- */
+function renderConversao(mes, polos) {
+  const T = polos.map(tot); const S = k => T.reduce((a, t) => a + t[k], 0);
+  const mkt = polos.reduce((a, pl) => a + num(pl.campanha?.mkt), 0);
+  let h = `<div class="strip">
+    <div class="cell"><div class="v">${n(polos.length)}</div><div class="l">Encontros no mês</div></div>
+    <div class="cell"><div class="v">${n(S("total"))}</div><div class="l">Leads recebidos no CRM</div></div>
+    <div class="cell"><div class="v">${n(mkt)}</div><div class="l">Leads enviados pelo MKT</div></div>
+    <div class="cell"><div class="v">${n(S("vendas"))}</div><div class="l">Vendas</div></div>
+    <div class="cell"><div class="v">${p(S("vendas"), S("total"))}</div><div class="l">Conversão geral</div></div>
+    <div class="cell"><div class="v">${n(S("emp"))}</div><div class="l">Empresas</div></div>
+    <div class="cell"><div class="v">${n(S("pessoas"))}</div><div class="l">Pessoas</div></div>
+  </div>
+  <nav class="thermo" aria-label="Temperatura por polo">${polos.map((pl, i) => `<a href="#p-${slug(pl.polo)}"><span class="dot bg-${nivel(T[i].emp)}">${n(T[i].emp)}</span>${esc(pl.polo)}</a>`).join("")}</nav>` + expandAllBar();
+  polos.forEach((pl, i) => {
+    const t = T[i], pp = pl.pipeline || {}, tp = pipeTotal(pp);
+    const maxS = Math.max(1, ...STAGES.map(s => num(pp[s[0]])));
+    const dif = t.total - num(pl.campanha?.mkt);
+    const hasMkt = pl.campanha?.mkt != null;
+    const difCls = !hasMkt ? "" : dif <= -20 ? "diff-bad" : dif <= -10 ? "diff-warn" : "";
+    const rows = (pl.vendedores || []).filter(v => !isInd(v) || num(v.recebidos) + num(v.reabertos) + num(v.vendas) + num(v.empresas) + num(v.realocado) > 0).map(v => {
+      const tr = num(v.recebidos) + num(v.reabertos);
+      return `<tr class="${isInd(v) ? "ind" : ""}"><td>${esc(v.nome)}</td><td>${n(num(v.recebidos))}</td><td>${n(num(v.reabertos))}</td><td class="hl">${n(tr)}</td><td>${n(num(v.recontatoBase))}</td><td class="hl">${n(num(v.vendas))}</td><td>${p(num(v.vendas), tr)}</td><td>${n(num(v.realocado))}</td><td>${n(num(v.empresas))}</td><td>${n(num(v.vendas) + num(v.realocado))}</td></tr>`;
+    }).join("");
+    const subC = (pl.dataEvento ? "Encontro em " + esc(pl.dataEvento) + ". " : "") + (pl.campanha?.periodo ? "Campanha de " + esc(pl.campanha.periodo) + ". " : "") + `${n(t.vendas)} vendas, ${p(t.vendas, t.total)} de conversão`;
+    h += `<section class="polo ${isOpen(pl)}" id="p-${slug(pl.polo)}">
+      <div class="polo-head">${toggleBtn(pl, subC)}<div class="head-r">${diasPill(pl)}${nivelPill(t.emp)}</div></div>
+      <div class="polo-body stack collapsible" id="b-${slug(pl.polo)}">
+        <div class="full">
+          <h3>Vendas por consultor</h3>
+          <div class="tbl"><table>
+            <thead><tr><th>Consultor</th><th>Recebidos</th><th>Reabertos</th><th>Total</th><th>Recontato base</th><th>Vendas</th><th>% venda</th><th>Realocado</th><th>Empresas</th><th>Pessoas</th></tr></thead>
+            <tbody>${rows}<tr class="total"><td>Total</td><td>${n(t.rec)}</td><td>${n(t.rea)}</td><td>${n(t.total)}</td><td>${n(t.base)}</td><td>${n(t.vendas)}</td><td>${p(t.vendas, t.total)}</td><td>${n(t.realoc)}</td><td>${n(t.emp)}</td><td>${n(t.pessoas)}</td></tr></tbody>
+          </table></div>
+        </div>
+        <div>
+          <h3>Temperatura da pipeline</h3>
+          <div class="legend"><span class="h">Quente</span><span class="c">Frio</span><span class="p">Perdido</span></div>
+          <div class="pipe">${STAGES.map(s => `<div class="stage ${s[2]}"><span>${s[1]}</span><span class="bar"><i style="width:${num(pp[s[0]]) / maxS * 100}%"></i></span><span class="q">${n(num(pp[s[0]]))}</span></div>`).join("")}
+            <div class="pipe-total"><span>Total de leads abertos</span><span class="num">${n(tp)}</span></div>
+          </div>
+        </div>
+        <div>
+          <h3>Retorno</h3>
+          <div class="ret">
+            <div><div class="v">${p(t.total - num(pp.prospeccao), t.total)}</div><div class="l">Retorno MKT<br>(recebidos − prospecção) ÷ recebidos</div></div>
+            <div><div class="v">${p(t.base - num(pp.recontato), t.base)}</div><div class="l">Retorno base<br>(base − recontato) ÷ base</div></div>
+          </div>
+          <div class="mkt">
+            <div><span class="v">${hasMkt ? n(num(pl.campanha.mkt)) : "—"}</span><span class="l">Leads do tráfego (MKT)</span></div>
+            <div><span class="v">${n(t.total)}</span><span class="l">Recebidos no CRM</span></div>
+            <div class="${difCls}"><span class="v">${hasMkt ? (dif > 0 ? "+" : "") + n(dif) : "—"}</span><span class="l">Diferença CRM − MKT</span></div>
+          </div>
+        </div>
+      </div>
+    </section>`;
+  });
+  return h;
+}
+
+/* ---------- Análise ficha de presença ---------- */
+function renderPresenca(mes, polos) {
+  const P = polos.map(pres); const ok = P.filter(Boolean);
+  const S = (k, f) => ok.reduce((a, x) => a + x[k][f], 0); const SA = k => ok.reduce((a, x) => a + x[k], 0);
+  const empPres = S("empresas", "pres");
+  let h = `<div class="strip">
+    <div class="cell"><div class="v">${n(ok.length)}&nbsp;<span class="muted" style="font-size:18px">de ${n(polos.length)} polos</span></div><div class="l">Fichas de presença recebidas</div></div>
+    <div class="cell"><div class="v">${n(S("pessoas", "pres"))}</div><div class="l">Pessoas presentes de ${n(S("pessoas", "qtd"))}</div>
+      <div class="tipos">${[["Empresas", "empresas"], ["Sócios", "socios"], ["Membros", "associados"]].map(([l, kk]) => { const pr = S(kk, "pres"), q = S(kk, "qtd"); return `<div><span class="tl">${l}</span><span class="tv">${n(pr)}<span class="muted"> de ${n(q)}</span></span></div>`; }).join("")}</div></div>
+    <div class="cell"><div class="v">${p(S("pessoas", "pres"), S("pessoas", "qtd"))}</div><div class="l">Presença geral</div>
+      <div class="plist">${[["Empresas", "empresas"], ["Sócios", "socios"], ["Membros", "associados"]].map(([l, kk]) => `<div><span>${l}</span><b>${p(S(kk, "pres"), S(kk, "qtd"))}</b></div>`).join("")}</div></div>
+    <div class="cell"><div class="v">${p(empPres, S("empresas", "qtd"))}</div><div class="l">Presença de empresas</div>
+      <div class="plist"><div><span>Presentes</span><b>${n(empPres)} de ${n(S("empresas", "qtd"))}</b></div><div><span>Faltas</span><b>${n(S("empresas", "faltas"))} (${p(S("empresas", "faltas"), S("empresas", "qtd"))})</b></div></div></div>
+    <div class="cell"><div class="v">${n(SA("adesao"))}</div><div class="l">Adesões</div></div>
+    <div class="cell"><div class="v">${p(SA("adesao"), empPres)}</div><div class="l">Adesão sobre empresas presentes</div></div>
+  </div>`;
+  h += expandAllBar();
+  polos.forEach((pl, i) => {
+    const x = P[i];
+    const k = slug(pl.polo);
+    if (!x) {
+      h += `<section class="polo" id="p-${k}"><div class="polo-head"><div><h2>${esc(pl.polo)}</h2>${pl.dataEvento ? `<div class="sub">Encontro em ${esc(pl.dataEvento)}</div>` : ""}</div>${diasPill(pl)}</div><div style="padding:18px 20px" class="muted">A ficha de presença deste encontro ainda não foi enviada.</div></section>`;
+      return;
+    }
+    const r = (lbl, o, strong) => `<tr class="${strong ? "total" : ""}"><td>${lbl}</td><td>${n(o.qtd)}</td><td>${n(o.faltas)}</td><td>${n(o.pres)}</td><td><div class="pct-cell">${strong ? "" : `<span class="minibar"><i style="width:${pctNum(o.pres, o.qtd) || 0}%"></i></span>`}${p(o.pres, o.qtd)}</div></td><td>${p(o.faltas, o.qtd)}</td></tr>`;
+    const w = kk => x.adesao ? x[kk] / x.adesao * 100 : 0;
+    h += `<section class="polo has-summary ${isOpen(pl)}" id="p-${k}">
+      <div class="polo-head">${toggleBtn(pl, pl.dataEvento ? "Encontro em " + esc(pl.dataEvento) : "")}${diasPill(pl)}</div>
+      <div class="psum">
+        <div>
+          <h3>Presentes</h3>
+          <div style="display:flex;align-items:baseline;gap:12px"><span class="big">${p(x.empresas.pres, x.empresas.qtd)}</span><span class="muted">${n(x.empresas.pres)} de ${n(x.empresas.qtd)} empresas presentes</span></div>
+          <div class="pline"><span>Pessoas <b>${n(x.pessoas.pres)}</b> de ${n(x.pessoas.qtd)} (${p(x.pessoas.pres, x.pessoas.qtd)})</span><span>Faltas de pessoas <b>${n(x.pessoas.faltas)}</b> (${p(x.pessoas.faltas, x.pessoas.qtd)})</span></div>
+        </div>
+        <div>
+          <h3>Adesão</h3>
+          <div style="display:flex;align-items:baseline;gap:12px"><span class="big">${n(x.adesao)}</span><span class="muted">adesões, ${p(x.adesao, x.empresas.pres)} das ${n(x.empresas.pres)} empresas presentes</span></div>
+          <div class="adesao-bar" role="img" aria-label="Divisão das adesões">${x.adesao ? `<i class="c-heros" style="width:${w("heros")}%"></i><i class="c-cora" style="width:${w("cora")}%"></i><i class="c-sem" style="width:${w("sem")}%"></i>` : ""}</div>
+          <div class="keys"><span style="--c:var(--accent)">Heros ${n(x.heros)}</span><span style="--c:var(--hot)">Cora ${n(x.cora)}</span><span style="--c:var(--lost)">Sem pagamento ${n(x.sem)}</span></div>
+        </div>
+      </div>
+      <div class="pres-detail collapsible" id="b-${k}">
+        <h3>Presença detalhada</h3>
+        <div class="tbl"><table><thead><tr><th>Descrição</th><th>Inscritos</th><th>Faltas</th><th>Presentes</th><th>% presentes</th><th>% faltas</th></tr></thead>
+        <tbody>${r("Empresas", x.empresas)}${r("Sócios", x.socios)}${r("Associados", x.associados)}${r("Total de pessoas", x.pessoas, true)}</tbody></table></div>
+      </div>
+    </section>`;
+  });
+  return h;
+}
+
+/* ---------- Desempenho por vendedor ---------- */
+function renderVendedores(mes, polos) {
+  const meta = mes.meta || {};
+  const names = vendorOrder(polos);
+  const agg = names.map(nome => {
+    const a = {nome, rec: 0, rea: 0, base: 0, vendas: 0, realoc: 0, emp: 0, porPolo: {}};
+    polos.forEach(pl => (pl.vendedores || []).filter(v => v.nome === nome).forEach(v => {
+      a.rec += num(v.recebidos); a.rea += num(v.reabertos); a.base += num(v.recontatoBase); a.vendas += num(v.vendas); a.realoc += num(v.realocado); a.emp += num(v.empresas);
+      a.porPolo[pl.polo] = {vendas: num(v.vendas), emp: num(v.empresas)};
+    }));
+    a.total = a.rec + a.rea; a.pessoas = a.vendas + a.realoc; a.ind = /indica/i.test(nome);
+    return a;
+  });
+  const cons = agg.filter(a => !a.ind);
+  const ranked = [...cons].sort((a, b) => b.emp - a.emp || b.vendas - a.vendas);
+  const mc = num(meta.metaConsultor), mm = num(meta.metaMes);
+  const T = k => agg.reduce((s, a) => s + a[k], 0);
+  const TC = k => cons.reduce((s, a) => s + a[k], 0);
+  let h = `<div class="meta-line">
+    <span>Eventos no mês <b>${n(meta.eventos)}</b></span>
+    <span>Meta por evento <b>${n(meta.metaPorEvento)}</b> empresas</span>
+    <span>Meta do mês <b>${n(meta.metaMes)}</b></span>
+    <span>Meta por consultor <b>${n(meta.metaConsultor)}</b></span>
+  </div>`;
+  if (!meta.metaMes) h += `<div class="state" style="padding:18px;margin-bottom:22px"><strong>Meta do mês ainda não informada</strong>Envie no chat a meta traçada para este mês para calcular o atingimento.</div>`;
+  h += `<div class="strip">
+    <div class="cell"><div class="v">${n(T("emp"))}</div><div class="l">Empresas no mês</div></div>
+    <div class="cell"><div class="v">${p(T("emp"), mm)}</div><div class="l">Atingimento da meta do mês</div></div>
+    <div class="cell"><div class="v">${n(T("vendas"))}</div><div class="l">Vendas</div></div>
+    <div class="cell"><div class="v">${n(T("realoc"))}</div><div class="l">Realocados</div></div>
+    <div class="cell"><div class="v">${p(TC("vendas"), TC("total"))}</div><div class="l">Conversão dos consultores</div></div>
+  </div><div class="vgrid">`;
+  ranked.forEach((a, i) => {
+    const at = pctNum(a.emp, mc);
+    h += `<article class="vcard"><div class="rank">${i + 1}º em empresas</div><h2>${esc(a.nome)}</h2>
+      <div style="display:flex;align-items:baseline;gap:10px;margin-top:8px"><span class="big">${at == null ? "—" : p(a.emp, mc)}</span><span class="muted">da meta</span></div>
+      <div class="prog ${at >= 100 ? "over" : ""}"><i style="width:${Math.min(100, at || 0)}%"></i></div>
+      <div class="muted" style="font-size:13px">${n(a.emp)} de ${n(mc)} empresas</div>
+      <div class="kv"><span>Vendas</span><span>${n(a.vendas)}</span><span>Realocados</span><span>${n(a.realoc)}</span><span>Pessoas</span><span>${n(a.pessoas)}</span><span>Leads recebidos</span><span>${n(a.rec)}</span><span>Reabertos</span><span>${n(a.rea)}</span><span>Total recebido</span><span>${n(a.total)}</span><span>Conversão</span><span>${p(a.vendas, a.total)}</span><span>Recontato base</span><span>${n(a.base)}</span></div>
+    </article>`;
+  });
+  h += `</div><div class="panel"><h2>Quadro geral</h2><div class="tbl"><table>
+    <thead><tr><th>Consultor</th><th>Recebidos</th><th>Reabertos</th><th>Total</th><th>Recontato base</th><th>Vendas</th><th>% venda</th><th>Realocado</th><th>Empresas</th><th>Pessoas</th><th>% meta</th></tr></thead><tbody>
+    ${agg.map(a => `<tr class="${a.ind ? "ind" : ""}"><td>${esc(a.nome)}</td><td>${n(a.rec)}</td><td>${n(a.rea)}</td><td>${n(a.total)}</td><td>${n(a.base)}</td><td class="hl">${n(a.vendas)}</td><td>${p(a.vendas, a.total)}</td><td>${n(a.realoc)}</td><td class="hl">${n(a.emp)}</td><td>${n(a.pessoas)}</td><td>${p(a.emp, mc)}</td></tr>`).join("")}
+    <tr class="total"><td>Total</td><td>${n(T("rec"))}</td><td>${n(T("rea"))}</td><td>${n(T("total"))}</td><td>${n(T("base"))}</td><td>${n(T("vendas"))}</td><td>${p(T("vendas"), T("total"))}</td><td>${n(T("realoc"))}</td><td>${n(T("emp"))}</td><td>${n(T("pessoas"))}</td><td>${p(T("emp"), mm)}</td></tr>
+  </tbody></table></div></div>
+  <div class="panel"><h2>Empresas por polo</h2><div class="tbl"><table>
+    <thead><tr><th>Consultor</th>${polos.map(pl => `<th>${esc(pl.polo)}</th>`).join("")}<th>Total</th></tr></thead><tbody>
+    ${agg.map(a => `<tr class="${a.ind ? "ind" : ""}"><td>${esc(a.nome)}</td>${polos.map(pl => `<td>${a.porPolo[pl.polo] ? n(a.porPolo[pl.polo].emp) : "—"}</td>`).join("")}<td class="hl">${n(a.emp)}</td></tr>`).join("")}
+    <tr class="total"><td>Total</td>${polos.map(pl => `<td><span class="num">${n(tot(pl).emp)}</span></td>`).join("")}<td>${n(T("emp"))}</td></tr>
+  </tbody></table></div></div>` + renderConvMensal();
+  return h;
+}
+
+/* ---------- Conversão mensal por vendedor (vendas ÷ leads recebidos) ---------- */
+let CONV = null, convOn = false;
+function ensureConv() {
+  if (convOn || !db) return; convOn = true;
+  const ano = mesSP().slice(0, 4);
+  db.doc("conversaoVendedor/" + ano).onSnapshot(d => { CONV = (d && d.exists !== false && d.data && d.data()) || {ano: +ano, meta: 12, ordem: [], meses: {}}; if (PAGE === "vendedores" && last) render(last[0], last[1]); }, () => {});
+  db.collection("polos").where("mes", ">=", ano + "-01").where("mes", "<=", ano + "-12").onSnapshot(s => { ANO_POLOS = s.docs.map(x => x.data()); if (PAGE === "vendedores" && last) render(last[0], last[1]); }, () => {});
+}
+function renderConvMensal() {
+  ensureConv();
+  const head = `<h2 class="sec-h">Conversão mensal por vendedor</h2><p class="sec-sub">Vendas ÷ total recebido (leads recebidos + reabertos) em cada mês, sem a linha Indicação</p>`;
+  if (!CONV) return head + `<div class="state" style="padding:18px">Carregando histórico…</div>`;
+  const ano = CONV.ano || +mesSP().slice(0, 4), meta = num(CONV.meta) || 12, hoje = mesSP();
+  const nomes = [...(CONV.ordem || [])];
+  const add = nm => { if (!nomes.includes(nm)) nomes.push(nm); };
+  const NOMES_MES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+  const rows = [];
+  for (let i = 0; i < 12; i++) {
+    const mm = String(i + 1).padStart(2, "0"), key = ano + "-" + mm;
+    let v = null;
+    if (CONV.meses?.[mm]) { v = {}; Object.entries(CONV.meses[mm]).forEach(([nm, x]) => { add(nm); v[nm] = {vendas: num(x.vendas), rec: num(x.recebidos) + num(x.reabertos)}; }); }
+    else if (key < hoje) {
+      const ps = ANO_POLOS.filter(pl => pl.mes === key);
+      if (ps.length) { v = {}; ps.forEach(pl => (pl.vendedores || []).filter(x => !isInd(x)).forEach(x => { add(x.nome); const o = v[x.nome] || (v[x.nome] = {vendas: 0, rec: 0}); o.vendas += num(x.vendas); o.rec += num(x.recebidos) + num(x.reabertos); })); }
+    }
+    if (v) rows.push({mes: NOMES_MES[i], v});
+  }
+  if (!rows.length) return head + `<div class="state" style="padding:18px">Nenhum mês fechado ainda.</div>`;
+  const cor = x => x == null ? "" : x >= meta ? "c-verde" : x >= meta - 2 ? "c-laranja" : "c-vermelho";
+  const cell = (a, b) => { const x = pctNum(a, b); return x == null ? `<td class="vazio" title="Sem leads no mês">–</td>` : `<td class="c ${cor(x)}" title="${n(a)} vendas de ${n(b)} leads (recebidos + reabertos)"><span>${p(a, b)}</span></td>`; };
+  const acc = {}; let AV = 0, AR = 0;
+  const body = rows.map(r => {
+    let mv = 0, mr = 0;
+    const tds = nomes.map(nm => { const o = r.v[nm]; if (!o) return `<td class="vazio" title="Sem leads no mês">–</td>`; mv += o.vendas; mr += o.rec; const t = acc[nm] || (acc[nm] = {v: 0, r: 0}); t.v += o.vendas; t.r += o.rec; return cell(o.vendas, o.rec); }).join("");
+    AV += mv; AR += mr;
+    return `<tr><td>${r.mes}</td>${tds}${cell(mv, mr)}<td class="meta">${meta}%</td></tr>`;
+  }).join("");
+  const fim = `<tr class="sum first strong"><td>Média geral</td>${nomes.map(nm => acc[nm] ? cell(acc[nm].v, acc[nm].r) : `<td class="vazio">–</td>`).join("")}${cell(AV, AR)}<td class="meta">${meta}%</td></tr>`;
+  return head + `<div class="chave" style="margin:0 0 12px"><span style="--c:var(--green)">${meta}% ou mais</span><span style="--c:var(--orange)">${meta - 2}% a ${meta}%</span><span style="--c:var(--red)">abaixo de ${meta - 2}%</span></div>
+  <div class="anual-tbl conv"><table><thead><tr><th>Mês</th>${nomes.map(nm => `<th>${esc(nm)}</th>`).join("")}<th>Média geral</th><th>Meta</th></tr></thead>
+  <tbody>${body}${fim}</tbody></table></div>
+  <p class="nota">A média geral soma vendas e leads do período antes de dividir, por isso não é a média simples das porcentagens. Jan a ago: planilha Controle de Conversão LEADS 2026; de setembro em diante o indicador calcula quando o mês fecha. Passe o mouse em uma célula para ver vendas e leads.</p>`;
+}
+
+/* ---------- Ranking anual ---------- */
+const MESES = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+let RANK = null, ANO_POLOS = [], anualOn = false, anualErr = false;
+function mesSP() { const d = new Date().toLocaleDateString("en-CA", {timeZone: "America/Sao_Paulo"}); return d.slice(0, 7); }
+function anualData() {
+  const ano = RANK?.ano || +mesSP().slice(0, 4), meta = num(RANK?.meta) || 10, hoje = mesSP();
+  const nomes = [...(RANK?.polos || [])];
+  const canon = nm => nomes.find(x => slug(x) === slug(nm)) || (nomes.push(nm), nm);
+  const cols = MESES.map((_, i) => {
+    const mm = String(i + 1).padStart(2, "0"), key = ano + "-" + mm;
+    const hist = RANK?.meses?.[mm];
+    if (hist) { const v = {}; Object.entries(hist).forEach(([k, x]) => { if (x != null && x !== "") v[canon(k)] = num(x); }); return {v, ok: true}; }
+    if (key < hoje) {
+      const ps = ANO_POLOS.filter(pl => pl.mes === key);
+      if (ps.length) { const v = {}; ps.forEach(pl => { v[canon(pl.polo)] = tot(pl).emp; }); return {v, ok: true}; }
+      return {v: {}, ok: true};
+    }
+    const ab = ANO_POLOS.some(pl => pl.mes === key);
+    return {v: {}, ok: false, andamento: key === hoje || ab};
+  });
+  return {ano, meta, nomes, cols};
+}
+function renderAnual() {
+  if (anualErr) return `<div class="state"><strong>Não foi possível carregar o ranking</strong>Recarregue a página.</div>`;
+  if (!RANK) return `<div class="state"><strong>Carregando ranking anual…</strong></div>`;
+  const {ano, meta, nomes, cols} = anualData();
+  const grupo = RANK.grupo || {};
+  const has = c => Object.keys(c.v).length > 0;
+  const C = cols.map(c => {
+    const vs = Object.values(c.v), ev = vs.length, t = vs.reduce((a, x) => a + x, 0), mb = vs.filter(x => x >= meta).length;
+    return {ev, t, mb, med: ev ? Math.round(t / ev) : null};
+  });
+  const T = C.reduce((a, c) => ({ev: a.ev + c.ev, t: a.t + c.t, mb: a.mb + c.mb}), {ev: 0, t: 0, mb: 0});
+  const ativos = nomes.filter(nm => cols.some(c => c.v[nm] != null));
+  const cell = x => x == null ? `<td class="vazio">–</td>` : `<td class="c c-${nivel(x)}"><span>${n(x)}</span></td>`;
+  const fechados = cols.filter(c => c.ok && has(c)).length;
+  let h = `<div class="strip">
+    <div class="cell"><div class="v">${n(T.t)}</div><div class="l">Empresas em ${ano}</div></div>
+    <div class="cell"><div class="v">${n(T.ev)}</div><div class="l">Encontros realizados</div></div>
+    <div class="cell"><div class="v">${T.ev ? n(Math.round(T.t / T.ev)) : "—"}</div><div class="l">Média de empresas por encontro</div></div>
+    <div class="cell"><div class="v">${n(T.mb)}</div><div class="l">Encontros com ${meta}+ empresas</div></div>
+    <div class="cell"><div class="v">${p(T.mb, T.ev)}</div><div class="l">Meta atingida no ano</div></div>
+  </div>
+  <div class="chave"><span style="--c:var(--green)">${meta} ou mais</span><span style="--c:var(--orange)">5 a ${meta - 1}</span><span style="--c:var(--red)">abaixo de 5</span><span style="--c:var(--lost)">– sem encontro</span></div>
+  <div class="anual-tbl"><table>
+    <thead><tr><th>Polo</th>${MESES.map((m, i) => `<th class="${cols[i].ok ? "" : "pend"}" title="${cols[i].andamento ? "Mês em andamento: entra no ranking quando fechar" : ""}">${m}</th>`).join("")}<th class="tot">Total</th><th>Eventos</th></tr></thead>
+    <tbody>${ativos.map(nm => {
+      const vs = cols.map(c => c.ok ? c.v[nm] : undefined), real = vs.filter(x => x != null);
+      return `<tr><td>${esc(nm)}${grupo[nm] ? `<span class="grp">${esc(grupo[nm])}</span>` : ""}</td>${vs.map((x, i) => cols[i].ok ? cell(x) : `<td></td>`).join("")}<td class="tot">${n(real.reduce((a, x) => a + x, 0))}</td><td>${n(real.length)}</td></tr>`;
+    }).join("")}
+    <tr class="sum first strong"><td>Total de empresas</td>${C.map((c, i) => `<td>${cols[i].ok && has(cols[i]) ? n(c.t) : ""}</td>`).join("")}<td class="tot">${n(T.t)}</td><td></td></tr>
+    <tr class="sum"><td>Quantidade de eventos</td>${C.map((c, i) => `<td>${cols[i].ok && has(cols[i]) ? n(c.ev) : ""}</td>`).join("")}<td class="tot">${n(T.ev)}</td><td></td></tr>
+    <tr class="sum"><td>Média do mês</td>${C.map((c, i) => `<td>${cols[i].ok && has(cols[i]) ? n(c.med) : ""}</td>`).join("")}<td class="tot">${T.ev ? n(Math.round(T.t / T.ev)) : "—"}</td><td></td></tr>
+    <tr class="sum"><td>Meta batida (${meta}+)</td>${C.map((c, i) => `<td>${cols[i].ok && has(cols[i]) ? n(c.mb) : ""}</td>`).join("")}<td class="tot">${n(T.mb)}</td><td></td></tr>
+    <tr class="sum strong"><td>% atingida</td>${C.map((c, i) => `<td>${cols[i].ok && has(cols[i]) ? p(c.mb, c.ev) : ""}</td>`).join("")}<td class="tot">${p(T.mb, T.ev)}</td><td></td></tr>
+    </tbody></table></div>
+  <p class="nota">${n(fechados)} ${fechados === 1 ? "mês fechado" : "meses fechados"}. Cada mês entra no ranking depois que termina; o mês em andamento aparece em cinza no cabeçalho. Meta batida conta os encontros com ${meta} empresas ou mais, e a % atingida divide esse número pelos encontros do mês.</p>`;
+  return h;
+}
+function ensureAnual() {
+  if (anualOn || !db) return; anualOn = true;
+  const ano = mesSP().slice(0, 4);
+  db.doc("ranking/" + ano).onSnapshot(d => { RANK = (d && d.exists !== false && d.data && d.data()) || {ano: +ano, meta: 10, polos: [], meses: {}}; if (PAGE === "anual") paintAnual(); }, () => { anualErr = true; if (PAGE === "anual") paintAnual(); });
+  db.collection("polos").where("mes", ">=", ano + "-01").where("mes", "<=", ano + "-12").onSnapshot(s => { ANO_POLOS = s.docs.map(x => x.data()); if (PAGE === "anual") paintAnual(); }, () => {});
+}
+function paintAnual() {
+  app.innerHTML = renderAnual();
+  document.getElementById("upd").textContent = ""; document.getElementById("foot").textContent = RANK?.fonte ? "Jan a ago: planilha de conversão de polos. De setembro em diante: calculado pelo indicador no fechamento de cada mês." : "";
+}
+
+/* ---------- dados ---------- */
+let db = null, meses = [], unsubPolos = null, current = null, last = null;
+function setTab(t, rerender) {
+  PAGE = t; loadOpen();
+  try { localStorage.setItem("cae-aba", t); } catch (e) {}
+  document.getElementById("title").textContent = TABS[t][0];
+  document.getElementById("subtitle").textContent = TABS[t][1];
+  document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === t));
+  document.querySelector(".controls").style.visibility = t === "anual" ? "hidden" : "";
+  if (t === "anual") { ensureAnual(); if (rerender || db) paintAnual(); return; }
+  if (rerender && last) render(last[0], last[1]);
+}
+document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => { if (b.dataset.tab !== PAGE) { setTab(b.dataset.tab, true); window.scrollTo(0, 0); } }));
+setTab(PAGE, false);
+function fmtUpd(t) {
+  const d = new Date(t), tz = "America/Sao_Paulo";
+  return d.toLocaleDateString("pt-BR", {timeZone: tz}) + " às " + d.toLocaleTimeString("pt-BR", {timeZone: tz, hour: "2-digit", minute: "2-digit"});
+}
+function render(mes, polos) {
+  last = [mes, polos];
+  if (PAGE === "anual") return;
+  if (!polos.length) {
+    document.getElementById("upd").textContent = ""; document.getElementById("foot").textContent = "";
+    app.innerHTML = `<div class="state"><strong>Nenhum encontro registrado em ${esc(mes.nome || mes.id)}</strong>Envie no chat o print do bloco ativo para alimentar este mês.</div>`;
+    return;
+  }
+  polos.sort((a, b) => num(a.ordem) - num(b.ordem) || String(a.polo).localeCompare(b.polo));
+  app.innerHTML = PAGE === "conversao" ? renderConversao(mes, polos) : PAGE === "presenca" ? renderPresenca(mes, polos) : renderVendedores(mes, polos);
+  const ts = polos.map(x => Date.parse(x.atualizadoEm)).filter(t => !isNaN(t));
+  const txt = ts.length ? "Última atualização: " + fmtUpd(Math.max(...ts)) : "";
+  document.getElementById("upd").textContent = txt;
+  document.getElementById("foot").textContent = txt;
+}
+function watchMonth(id) {
+  if (unsubPolos) unsubPolos();
+  current = id;
+  const mes = meses.find(m => m.id === id) || {id};
+  app.innerHTML = `<div class="state"><strong>Carregando ${esc(mes.nome || id)}…</strong></div>`;
+  unsubPolos = db.collection("polos").where("mes", "==", id).onSnapshot(
+    snap => { const m = meses.find(x => x.id === current) || {id: current}; render(m, snap.docs.map(d => d.data())); },
+    () => { app.innerHTML = `<div class="state"><strong>Não foi possível carregar os dados</strong>Recarregue a página.</div>`; }
+  );
+}
+(async () => {
+  db = snapDb();
+  if (db && PAGE === "anual") { ensureAnual(); paintAnual(); }
+  if (!db) { app.innerHTML = `<div class="state"><strong>Dados indisponíveis nesta visualização</strong>Abra este artefato no Claude para ver os indicadores.</div>`; sel.innerHTML = "<option>—</option>"; return; }
+  db.collection("meses").orderBy("mes", "desc").onSnapshot(snap => {
+    meses = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    if (!meses.length) { sel.innerHTML = "<option>Sem meses</option>"; app.innerHTML = `<div class="state"><strong>Nenhum mês registrado ainda</strong>Envie no chat o primeiro print para começar.</div>`; return; }
+    const keep = current && meses.some(m => m.id === current) ? current : meses[0].id;
+    sel.innerHTML = meses.map(m => `<option value="${esc(m.id)}">${esc(m.nome || m.id)}</option>`).join("");
+    sel.value = keep; sel.disabled = false;
+    if (keep !== current) watchMonth(keep);
+    else { /* meta pode ter mudado */ db.collection("polos").where("mes", "==", current).get().then(s => render(meses.find(x => x.id === current), s.docs.map(d => d.data()))); }
+  }, () => { app.innerHTML = `<div class="state"><strong>Não foi possível carregar os meses</strong>Recarregue a página.</div>`; });
+  sel.addEventListener("change", () => watchMonth(sel.value));
+})();
+</script>
+</body>
+</html>
